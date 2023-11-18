@@ -2552,6 +2552,9 @@ ol {
 /*---------------------
   Contact
 -----------------------*/
+.contact_icon {
+	max-width: 5%;
+}
 
 .contact {
 	padding-top: 0;
@@ -2641,6 +2644,7 @@ ol {
 .contact__form form button {
 	width: 100%;
 }
+
 
 /*---------------------
   Sign In

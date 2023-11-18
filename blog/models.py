@@ -1,3 +1,5 @@
+from django.utils import timezone
+from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
@@ -43,7 +45,7 @@ class Post(models.Model):
     )
     tags = models.ManyToManyField(Tag, related_name="posts")
     create_at = models.DateTimeField(auto_now_add=True)
-    slug = models.SlugField(max_length=200, default='')
+    slug = models.SlugField(max_length=200, default='', unique=True)
 
     def __str__(self):
         return self.title
@@ -54,14 +56,17 @@ class Post(models.Model):
     def get_recipes(self):
         return self.recipes.all()
 
+    def get_comments(self):
+        return self.comment.all()
+
 
 class Recipe(models.Model):
     name = models.CharField(max_length=100)
     serves = models.CharField(max_length=50)
     prep_time = models.PositiveIntegerField(default=0)
     cook_time = models.PositiveIntegerField(default=0)
-    ingredients = models.TextField()
-    directions = models.TextField()
+    ingredients = RichTextField()
+    directions = RichTextField()
     post = models.ForeignKey(
         Post,
         related_name="recipes",
@@ -74,6 +79,7 @@ class Recipe(models.Model):
 class Comment(models.Model):
     name = models.CharField(max_length=50)
     email = models.CharField(max_length=100)
-    website = models.CharField(max_length=150)
+    website = models.CharField(max_length=150, blank=True, null=True)
     message = models.TextField(max_length=500)
+    create_at = models.DateTimeField(default=timezone.now)
     post = models.ForeignKey(Post, related_name="comment", on_delete=models.CASCADE)
